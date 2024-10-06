@@ -1,0 +1,56 @@
+name: Fuzzing Job
+
+# Trigger on any push or pull request to the master branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Build the Docker image for ProjectX
+      - name: Build Docker Image
+        run: docker build -t projectx-fuzzer .
+
+      # Run the Docker container and start fuzzing
+      - name: Run Fuzzer
+        run: |
+          docker run --rm projectx-fuzzer
+          docker logs projectx-fuzzer
+
+      # Upload logs as artifact for inspection
+      - name: Upload Fuzzing Logs
+        uses: actions/upload-artifact@v2
+        with:
+          name: fuzzing-logs
+          path: ./fuzzing-logs.txt
+
+      # Generate coverage report
+      - name: Generate Coverage Report
+        run: |
+          cmake --coverage .
+          make
+          lcov --capture --directory . --output-file coverage.info
+          genhtml coverage.info --output-directory out
+          
+      # Upload coverage report
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ./out
+
