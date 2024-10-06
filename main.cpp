@@ -81,6 +81,7 @@ void run_tests() {
 	std::cout << "Caught exception for non-numeric input: " << e.what() << std::endl;
 	}
 
+	std::cout << "End of program!" << std::endl;
 }
 
 int main() {
