@@ -1,4 +1,4 @@
-# ProjectX3
+# ProjectX2.0
 
 Calculator code for TechnoTech product upgraded with docker and provided by DevOps team to you.
 
